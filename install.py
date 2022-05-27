@@ -5,7 +5,7 @@ from termcolor import colored
 
 def execute_os_cmd(info: str, command: str):
     r = os.system(command)
-    print(colored(f"[!] Error: {info} failed with EXIT_CODE: {r}", 'red') if r != 0 else colored(f"[#] Succes: {info}"))
+    print(colored(f"[!] Error: {info} failed with EXIT_CODE: {r}", 'red') if r != 0 else colored(f"[#] Succes: {info}", 'green'))
     pass
 
 
@@ -26,8 +26,8 @@ def set_default_config():
     data = json.load(f)
 
     for col in data:
-        for opt in col.collection:
-            config[f'{ col.name }'][f'{ opt }']=False
+        for opt in col["collection"]:
+            config[f'{ col["name"] }'][f'{ opt }']=False
 
     with open('/etc/pwnbox/pwncfg.ini', 'w') as configfile:
         config.write(configfile)
