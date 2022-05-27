@@ -23,7 +23,7 @@ echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
 echo 250 > configs/c.1/MaxPower
 # Add functions here
 
-python $(PWNBOX_ROOT)/boot_script.py
+python $PWNBOX_ROOT/boot_script.py
 
 # End functions
 ls /sys/class/udc > UDC
