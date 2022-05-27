@@ -1,7 +1,7 @@
 import os
 import configparser
-import json
 from termcolor import colored
+from genericpath import exists
 
 def execute_os_cmd(info: str, command: str) -> int:
     exit_code = os.system(command)
@@ -12,16 +12,20 @@ def execute_os_cmd(info: str, command: str) -> int:
 def set_root_export():
     working_dir = os.getcwd()
     
-    success = execute_os_cmd(
-        "Setting up root export for PWNBOX using this directory.", 
-        f"echo \"#!/bin/bash\r\nexport $PWNBOX_ROOT=\"" + working_dir + " > /etc/profile.d/pwnbox_setup.sh && chmod +x /etc/profile.d/pwnbox_setup.sh"
-    ) == 0
+    file_exists = exists('/etc/profile.d/pwnbox_setup.sh')
+    if not file_exists:
+        success = execute_os_cmd(
+            "Setting up root export for PWNBOX using this directory.", 
+            f"echo \"#!/bin/bash\r\nexport $PWNBOX_ROOT=\"" + working_dir + " > /etc/profile.d/pwnbox_setup.sh && chmod +x /etc/profile.d/pwnbox_setup.sh"
+        ) == 0
 
-    if success:
-        execute_os_cmd(
-            "Sourcing file to set PWNBOX_ROOT for use in shell scripts downstream install",
-            "source /etc/profile.d/pwnbox_setup.sh"
-        )
+        if success:
+            execute_os_cmd(
+                "Sourcing file to set PWNBOX_ROOT for use in shell scripts downstream install",
+                "source /etc/profile.d/pwnbox_setup.sh"
+            )
+    else:
+        print(colored("[~] Warning: /etc/profile.d/pwnbox_setup.sh already exists. Skipping Creation...", 'yellow'))
     pass
 
 
@@ -53,9 +57,12 @@ def set_default_config():
 def bypass_rc_local():
     with open('/etc/rc.local', 'r') as file :
         filedata = file.read()
-    filedata = filedata.replace('exit 0', "$PWNBOX_ROOT/load_hid_kernel.sh\r\nexit 0")
-    with open('/etc/rc.local', 'w') as file:
-        file.write(filedata)
+
+    # Prevent duplicate writes
+    if not filedata.__contains__('$PWNBOX_ROOT/load_hid_kernel.sh'):
+        filedata = filedata.replace('exit 0', "$PWNBOX_ROOT/load_hid_kernel.sh\r\nexit 0")
+        with open('/etc/rc.local', 'w') as file:
+            file.write(filedata)
     pass
 
 
