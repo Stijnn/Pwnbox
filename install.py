@@ -14,7 +14,7 @@ def set_root_export():
     
     success = execute_os_cmd(
         "Setting up root export for PWNBOX using this directory.", 
-        f"echo \"export $PWNBOX_ROOT=\"" + working_dir + " > /etc/profile.d/pwnbox_setup.sh && chmod +x /etc/profile.d/pwnbox_setup.sh"
+        f"echo \"#!/bin/bash\r\nexport $PWNBOX_ROOT=\"" + working_dir + " > /etc/profile.d/pwnbox_setup.sh && chmod +x /etc/profile.d/pwnbox_setup.sh"
     ) == 0
 
     if success:
@@ -39,7 +39,7 @@ def set_default_config():
 
     config = configparser.ConfigParser()
     config.read('/etc/pwnbox/pwncfg.ini')
-    
+
     config["TYPES"] = {
         "KEYBOARD": False
     }
