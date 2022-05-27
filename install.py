@@ -10,7 +10,8 @@ def execute_os_cmd(info: str, command: str):
 
 
 def set_root_export():
-    execute_os_cmd("Setting up root export for PWNBOX using this directory.", f"echo \"export PWNBOX_ROOT={os.getcwd()}\" > /etc/profile.d/pwnbox_setup.sh")
+    working_dir = os.getcwd()
+    execute_os_cmd("Setting up root export for PWNBOX using this directory.", f"echo \"export PWNBOX_ROOT=\"" + working_dir + " > /etc/profile.d/pwnbox_setup.sh && chmod +x /etc/profile.d/pwnbox_setup.sh")
     pass
 
 
