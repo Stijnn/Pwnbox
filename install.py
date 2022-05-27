@@ -1,14 +1,22 @@
 import os
 import configparser
 import json
+from termcolor import colored
+
+def execute_os_cmd(info: str, command: str):
+    r = os.system(command)
+    print(colored(f"[!] Error: {info} failed with EXIT_CODE: {r}", 'red') if r != 0 else colored(f"[#] Succes: {info}"))
+    pass
+
 
 def set_root_export():
-    os.system(f"echo \"export PWNBOX_ROOT={os.getcwd()}\" > /etc/profile.d/pwnbox_setup.sh")
+    execute_os_cmd("Setting up root export for PWNBOX using this directory.", f"echo \"export PWNBOX_ROOT={os.getcwd()}\" > /etc/profile.d/pwnbox_setup.sh")
     pass
 
 
 def set_default_config():
-    os.system('mkdir -p /etc/pwnbox/ && touch /etc/pwnbox/pwncfg.ini')
+    execute_os_cmd("Setting up config directory in /etc/ for PWNBOX as /etc/pwnbox.", "mkdir -p /etc/pwnbox/")
+    execute_os_cmd("Creating default .ini file for later use. This file will hold persistent settings as to what to load on boot.", "touch /etc/pwnbox/pwncfg.ini")
 
     config = configparser.ConfigParser()
     config.read('/etc/pwnbox/pwncfg.ini')
