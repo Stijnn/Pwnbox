@@ -14,7 +14,7 @@ mkdir -p strings/0x409
 
 echo "0xdeadbeef420024" > strings/0x409/serialnumber
 
-echo "Stijn Verhelpen" > strings/0x409/manufacturer
+echo "Pwnbox Developer" > strings/0x409/manufacturer
 echo "Pwnbox Gadget Box" > strings/0x409/product
 
 mkdir -p configs/c.1/strings/0x409
