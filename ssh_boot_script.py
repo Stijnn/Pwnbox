@@ -1,8 +1,5 @@
-
-
 def main():
     [print(l.replace('\n','')) for l in open('./banner.txt', 'r').readlines()]
-
     pass
 
 
