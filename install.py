@@ -44,6 +44,7 @@ def set_default_config():
     data = json.load(f)
 
     for col in data:
+        config[f'{ col["name"] }'] = {}
         for opt in col["collection"]:
             config[f'{ col["name"] }'][f'{ opt }']=False
 
