@@ -39,14 +39,10 @@ def set_default_config():
 
     config = configparser.ConfigParser()
     config.read('/etc/pwnbox/pwncfg.ini')
-
-    f = open('./default_config.json')
-    data = json.load(f)
-
-    for col in data:
-        config[f'{ col["name"] }'] = {}
-        for opt in col["collection"]:
-            config[f'{ col["name"] }'][f'{ opt }']=False
+    
+    config["TYPES"] = {
+        "KEYBOARD": False
+    }
 
     with open('/etc/pwnbox/pwncfg.ini', 'w') as configfile:
         config.write(configfile)
