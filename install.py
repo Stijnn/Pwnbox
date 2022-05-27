@@ -3,21 +3,39 @@ import configparser
 import json
 from termcolor import colored
 
-def execute_os_cmd(info: str, command: str):
-    r = os.system(command)
-    print(colored(f"[!] Error: {info} failed with EXIT_CODE: {r}", 'red') if r != 0 else colored(f"[#] Succes: {info}", 'green'))
-    pass
+def execute_os_cmd(info: str, command: str) -> int:
+    exit_code = os.system(command)
+    print(colored(f"[{exit_code}] Error: {info}", 'red') if exit_code != 0 else colored(f"[#] Succes: {info}", 'green'))
+    return exit_code
 
 
 def set_root_export():
     working_dir = os.getcwd()
-    execute_os_cmd("Setting up root export for PWNBOX using this directory.", f"echo \"export PWNBOX_ROOT=\"" + working_dir + " > /etc/profile.d/pwnbox_setup.sh && chmod +x /etc/profile.d/pwnbox_setup.sh")
+    
+    success = execute_os_cmd(
+        "Setting up root export for PWNBOX using this directory.", 
+        f"echo \"export $PWNBOX_ROOT=\"" + working_dir + " > /etc/profile.d/pwnbox_setup.sh && chmod +x /etc/profile.d/pwnbox_setup.sh"
+    ) == 0
+
+    if success:
+        execute_os_cmd(
+            "Sourcing file to set PWNBOX_ROOT for use in shell scripts downstream install",
+            "source /etc/profile.d/pwnbox_setup.sh"
+        )
     pass
 
 
 def set_default_config():
-    execute_os_cmd("Setting up config directory in /etc/ for PWNBOX as /etc/pwnbox.", "mkdir -p /etc/pwnbox/")
-    execute_os_cmd("Creating default .ini file for later use. This file will hold persistent settings as to what to load on boot.", "touch /etc/pwnbox/pwncfg.ini")
+
+    execute_os_cmd(
+        "Setting up config directory in /etc/ for PWNBOX as /etc/pwnbox.", 
+        "mkdir -p /etc/pwnbox/"
+    )
+
+    execute_os_cmd(
+        "Creating default .ini file for later use. This file will hold persistent settings as to what to load on boot.", 
+        "touch /etc/pwnbox/pwncfg.ini"
+    )
 
     config = configparser.ConfigParser()
     config.read('/etc/pwnbox/pwncfg.ini')
