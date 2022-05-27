@@ -34,9 +34,19 @@ def set_default_config():
     pass
 
 
+def bypass_rc_local():
+    with open('/etc/rc.local', 'r') as file :
+        filedata = file.read()
+    filedata = filedata.replace('exit 0', "$PWNBOX_ROOT/load_hid_kernel.sh\r\nexit 0")
+    with open('/etc/rc.local', 'w') as file:
+        file.write(filedata)
+    pass
+
+
 def main():
     set_root_export()
     set_default_config()
+    bypass_rc_local()
     pass
 
 
