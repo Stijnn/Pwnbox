@@ -1,5 +1,6 @@
 import os
 import configparser
+
 from termcolor import colored
 from genericpath import exists
 
@@ -50,16 +51,23 @@ def set_default_config():
 
 def bypass_rc_local():
     with open(RC_LOCAL_FILE_PATH, 'r') as file :
-        filedata = file.read()
+        filedata = file.readlines()
 
     # Prevent duplicate writes
-    if not filedata.__contains__(PWN_BOOT_SHELL_SCRIPT_FILE_PATH):
-        filedata = filedata.replace('exit 0', PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd() +" \r\nexit 0")
-        with open(RC_LOCAL_FILE_PATH, 'w') as file:
-            file.write(filedata)
-    else:
-        print(colored(f"[~] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} already exists. Skipping creation...", "yellow"))
-
+    for line in filedata:
+        if line.startswith('#'):
+            continue
+        elif line.__contains__(PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd()):
+            print(colored(f"[~] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} already exists. Skipping creation...", "yellow"))
+            break
+        elif line.__contains__("exit 0"):
+            line.replace('exit 0', PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd() +" \r\nexit 0")
+            print(colored(f"[#] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} created. Now writing changes...", "green"))
+            break
+    
+    with open(RC_LOCAL_FILE_PATH, 'w') as file:
+        file.write(filedata)
+        
     pass
 
 
