@@ -66,7 +66,7 @@ def bypass_rc_local():
             break
     
     with open(RC_LOCAL_FILE_PATH, 'w') as file:
-        file.write(filedata)
+        file.writelines(filedata)
         
     pass
 
