@@ -43,8 +43,10 @@ def main():
         try:
             if boot_object['should_load']:
                 os.chdir(GADGET_PATH)
-                os.system(boot_object["load_file"])
+                exit_code = os.system(boot_object["load_file"])
                 os.chdir(ROOT_PATH)
+                if exit_code == 0:
+                    logging.info(f"Loaded the following USB Gadget: {boot_object}")
         except:
             logging.error(f"Failed loading: { boot_object['id'] }")
 
