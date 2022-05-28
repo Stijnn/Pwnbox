@@ -54,7 +54,7 @@ def bypass_rc_local():
 
     # Prevent duplicate writes
     if not filedata.__contains__(PWN_BOOT_SHELL_SCRIPT_FILE_PATH):
-        filedata = filedata.replace('exit 0', os.getcwd() + PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd() +" \r\nexit 0")
+        filedata = filedata.replace('exit 0', PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd() +" \r\nexit 0")
         with open(RC_LOCAL_FILE_PATH, 'w') as file:
             file.write(filedata)
     else:
