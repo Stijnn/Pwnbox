@@ -13,10 +13,11 @@ LOGGING_DIR = os.getcwd() + "/Logs"
 
 if not exists(LOGGING_DIR):
     os.mkdir(LOGGING_DIR)
-    
+
 logging.basicConfig(filename=f'{LOGGING_DIR}/{datetime.now()}_boot.log', encoding='utf-8', level=logging.DEBUG)
 
 CONFIG_PATH = '/etc/pwnbox/pwncfg.ini'
+ROOT_PATH = os.getcwd()
 
 # Retrieve GADGET_PATH from CLI
 if len(sys.argv) > 1:
@@ -41,7 +42,9 @@ def main():
     for boot_object in boot_config:
         try:
             if boot_object['should_load']:
+                os.chdir(GADGET_PATH)
                 os.system(boot_object["load_file"])
+                os.chdir(ROOT_PATH)
         except:
             logging.error(f"Failed loading: { boot_object['id'] }")
 
