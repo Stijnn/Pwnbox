@@ -53,20 +53,29 @@ def bypass_rc_local():
     with open(RC_LOCAL_FILE_PATH, 'r') as file :
         filedata = file.readlines()
 
+    new_lines = []
+    check_hit = False
     # Prevent duplicate writes
     for line in filedata:
         if line.startswith('#'):
+            new_lines.append(line)
             continue
         elif line.__contains__(PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd()):
             print(colored(f"[~] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} already exists. Skipping creation...", "yellow"))
-            break
+            check_hit = True
+            new_lines.append(line)
+            continue
         elif line.__contains__("exit 0"):
-            line.replace('exit 0', PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd() +" \r\nexit 0")
-            print(colored(f"[#] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} created. Now writing changes...", "green"))
-            break
+            if not check_hit:
+                print(colored(f"[#] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} created. Now writing changes...", "green"))
+                check_hit = True
+                new_lines.append(line.replace('exit 0', PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd() +" \r\nexit 0"))
+        else:
+            new_lines.append(line)
+
     
     with open(RC_LOCAL_FILE_PATH, 'w') as file:
-        file.writelines(filedata)
+        file.writelines(new_lines)
         
     pass
 
