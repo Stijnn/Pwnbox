@@ -27,4 +27,5 @@ cd $1
 python $1/boot_script.py /sys/kernel/config/usb_gadget/pwnbox_kernel
 
 # End functions
+cd /sys/kernel/config/usb_gadget/pwnbox_kernel
 ls /sys/class/udc > UDC
