@@ -1,10 +1,18 @@
 import configparser
 import os
+import logging
+
+from datetime import datetime
+
+os.mkdir('./logging')
+
+log = logging.basicConfig(filename=f'./logging/{datetime.now()}_boot.log', encoding='utf-8', level=logging.DEBUG)
 
 CONFIG_PATH = '/etc/pwnbox/pwncfg.ini'
 
 config = configparser.ConfigParser()
 config.read(CONFIG_PATH)
+logging.info(f"Read {CONFIG_PATH} as CONFIG_PATH for {config}")
 
 boot_config = {
     {
@@ -13,6 +21,7 @@ boot_config = {
         "load_file": "./load_keyboard_kernel.sh"
     }
 }
+logging.info(f"Setup bootconfig based on {config} result\n{boot_config}")
 
 def main():
 
@@ -21,7 +30,7 @@ def main():
             if boot_object.should_load:
                 os.system(boot_object.load_file)
         except:
-            print(f"Failed loading: {boot_object.id}")
+            logging.error(f"Failed loading: {boot_object.id}")
 
     pass
 
