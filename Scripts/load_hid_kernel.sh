@@ -23,7 +23,8 @@ echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
 echo 250 > configs/c.1/MaxPower
 # Add functions here
 
-python $1/boot_script.py
+cd $1
+python $1/boot_script.py /sys/kernel/config/usb_gadget/pwnbox_kernel
 
 # End functions
 ls /sys/class/udc > UDC

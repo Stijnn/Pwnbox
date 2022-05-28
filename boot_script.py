@@ -1,6 +1,7 @@
 import configparser
 import os
 import logging
+import sys
 
 from datetime import datetime
 
@@ -9,10 +10,13 @@ SCRIPT_KEYBOARD = SCRIPT_DIR + "/load_keyboard_kernel.sh"
 
 LOGGING_DIR = os.getcwd() + "/Logs"
 os.mkdir(LOGGING_DIR)
-
-log = logging.basicConfig(filename=f'{LOGGING_DIR}/{datetime.now()}_boot.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename=f'{LOGGING_DIR}/{datetime.now()}_boot.log', encoding='utf-8', level=logging.DEBUG)
 
 CONFIG_PATH = '/etc/pwnbox/pwncfg.ini'
+
+# Retrieve GADGET_PATH from CLI
+if len(sys.argv) > 1:
+    GADGET_PATH = sys.argv[1]
 
 config = configparser.ConfigParser()
 config.read(CONFIG_PATH)
@@ -26,6 +30,7 @@ boot_config = {
     }
 }
 logging.info(f"Setup bootconfig based on {config} result\n{boot_config}")
+
 
 def main():
 
