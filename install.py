@@ -70,6 +70,8 @@ def bypass_rc_local():
                 print(colored(f"[#] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} created. Now writing changes...", "green"))
                 check_hit = True
                 new_lines.append(line.replace('exit 0', PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd() +" \r\nexit 0"))
+            else:
+                new_lines.append(line)
         else:
             new_lines.append(line)
 
