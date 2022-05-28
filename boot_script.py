@@ -1,4 +1,5 @@
 import configparser
+from genericpath import exists
 import os
 import logging
 import sys
@@ -9,7 +10,10 @@ SCRIPT_DIR = os.getcwd() + "/Scripts"
 SCRIPT_KEYBOARD = SCRIPT_DIR + "/load_keyboard_kernel.sh"
 
 LOGGING_DIR = os.getcwd() + "/Logs"
-os.mkdir(LOGGING_DIR)
+
+if not exists(LOGGING_DIR):
+    os.mkdir(LOGGING_DIR)
+    
 logging.basicConfig(filename=f'{LOGGING_DIR}/{datetime.now()}_boot.log', encoding='utf-8', level=logging.DEBUG)
 
 CONFIG_PATH = '/etc/pwnbox/pwncfg.ini'
