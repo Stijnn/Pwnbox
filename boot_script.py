@@ -22,13 +22,13 @@ config = configparser.ConfigParser()
 config.read(CONFIG_PATH)
 logging.info(f"Read {CONFIG_PATH} as CONFIG_PATH for {config}")
 
-boot_config = {
+boot_config = [
     {
         "id": "HID_KEYBOARD",
         "should_load": config.getboolean('TYPES', 'KEYBOARD'),
         "load_file": SCRIPT_KEYBOARD
     }
-}
+]
 logging.info(f"Setup bootconfig based on {config} result\n{boot_config}")
 
 
@@ -36,10 +36,10 @@ def main():
 
     for boot_object in boot_config:
         try:
-            if boot_object.should_load:
-                os.system(boot_object.load_file)
+            if boot_object['should_load']:
+                os.system(boot_object["load_file"])
         except:
-            logging.error(f"Failed loading: {boot_object.id}")
+            logging.error(f"Failed loading: { boot_object['id'] }")
 
     pass
 
