@@ -4,6 +4,10 @@ import logging
 
 from datetime import datetime
 
+SCRIPT_DIR = os.getcwd() + "/Scripts"
+SCRIPT_KEYBOARD = SCRIPT_DIR + "/load_keyboard_kernel.sh"
+
+
 os.mkdir('./logging')
 
 log = logging.basicConfig(filename=f'./logging/{datetime.now()}_boot.log', encoding='utf-8', level=logging.DEBUG)
@@ -18,7 +22,7 @@ boot_config = {
     {
         "id": "HID_KEYBOARD",
         "should_load": config.getboolean('TYPES', 'KEYBOARD'),
-        "load_file": "./load_keyboard_kernel.sh"
+        "load_file": SCRIPT_KEYBOARD
     }
 }
 logging.info(f"Setup bootconfig based on {config} result\n{boot_config}")
