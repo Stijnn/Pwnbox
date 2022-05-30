@@ -39,16 +39,20 @@ logging.info(f"Setup bootconfig based on {config} result\n{boot_config}")
 
 def main():
 
+    idx = 0
     for boot_object in boot_config:
         try:
             if boot_object['should_load']:
                 os.chdir(GADGET_PATH)
-                exit_code = os.system(boot_object["load_file"])
+                exit_code = os.system(boot_object["load_file"] + f' {idx}')
                 os.chdir(ROOT_PATH)
                 if exit_code == 0:
                     logging.info(f"Loaded the following USB Gadget: {boot_object}")
+                    idx += 1
         except:
             logging.error(f"Failed loading: { boot_object['id'] }")
+
+    os.system(f'./Scripts/post_boot_script.sh {ROOT_PATH}')
 
     pass
 

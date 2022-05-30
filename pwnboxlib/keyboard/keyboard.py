@@ -72,7 +72,7 @@ class Keyboard():
         sleep(0.001)
         enter_report    = list(self.__create_report__())
         enter_report[2] = KEY_ENTER
-        self.write("".join(enter_report))
+        self.__write__("".join(enter_report))
 
     
     def press_key(self, key: str, modifiers: List[str] = [KEY_NONE], release=True):
