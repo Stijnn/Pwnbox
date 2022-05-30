@@ -59,7 +59,7 @@ def main():
     logging.info(f'Invoking: {ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
 
     try:
-        result = subprocess.check_output(f'{ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}', shell=True)
+        result = subprocess.check_output([f'{ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}'], stderr=subprocess.STDOUT, shell=True)
         logging.info(f'{result}')
     except:
         logging.error(f'Something went wrong with invoking post_boot_script...')
