@@ -5,6 +5,7 @@ import logging
 import sys
 
 from datetime import datetime
+from time import sleep
 
 SCRIPT_DIR = os.getcwd() + "/Scripts"
 SCRIPT_KEYBOARD = SCRIPT_DIR + "/load_keyboard_kernel.sh"
@@ -52,6 +53,7 @@ def main():
         except:
             logging.error(f"Failed loading: { boot_object['id'] }")
 
+    sleep(10)
     os.system(f'{ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
 
     pass
