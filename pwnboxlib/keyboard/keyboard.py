@@ -2,9 +2,7 @@ from os.path import exists
 from time import sleep
 from typing import List
 
-from pwncore.pwncore import USBDevice
 from keyboard.keytranslation import *
-
 
 class Keyboard():
     def __init__(self, gadget_path) -> None:
