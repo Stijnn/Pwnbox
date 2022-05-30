@@ -48,21 +48,20 @@ def main():
             if boot_object['should_load']:
                 os.chdir(GADGET_PATH)
                 exit_code = os.system(boot_object["load_file"] + f' {idx}')
-                os.chdir(ROOT_PATH)
                 if exit_code == 0:
                     logging.info(f"Loaded the following USB Gadget: {boot_object}")
                     idx += 1
         except:
             logging.error(f"Failed loading: { boot_object['id'] }")
 
-    sleep(30)
-    logging.info(f'Invoking: {ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
+    # sleep(5)
+    # logging.info(f'Invoking: {ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
 
-    try:
-        result = subprocess.getoutput(f'{ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
-        logging.info(f'STDOUT: {result}')
-    except:
-        logging.error(f'Something went wrong with invoking post_boot_script...')
+    # try:
+    #     result = subprocess.getoutput(f'{ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
+    #     logging.info(f'STDOUT: {result}')
+    # except:
+    #     logging.error(f'Something went wrong with invoking post_boot_script...')
 
     pass
 
