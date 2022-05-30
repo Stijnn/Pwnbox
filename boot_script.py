@@ -55,7 +55,7 @@ def main():
         except:
             logging.error(f"Failed loading: { boot_object['id'] }")
 
-    sleep(10)
+    sleep(30)
     logging.info(f'Invoking: {ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
 
     try:

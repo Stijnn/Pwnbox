@@ -6,14 +6,9 @@ from keytranslation import *
 
 class Keyboard():
     def __init__(self, gadget_path) -> None:
-        if exists(gadget_path):
-            self.__device_info__ = {
-                "gadget_path": gadget_path
-            }
-        else:
-            self.__device_info__ = {
-                "gadget_path": None
-            }
+        self.__device_info__ = {
+            "gadget_path": gadget_path
+        }
         self.gadget = None
         pass
 
