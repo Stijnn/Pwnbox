@@ -52,7 +52,7 @@ class Keyboard():
             b = list(self.__create_report__())
             meta = USB_CHARACTER_TRANSLATION_KEYCODES.get(c)
             if meta[0]:
-                b[0] = chr(ord(b[0]) + KEY_MOD_LSHIFT)
+                b[0] = chr(ord(b[0]) + ord(KEY_MOD_LSHIFT))
             b[2] = chr(meta[1])
             self.__write__("".join(b))
             sleep(0.001)

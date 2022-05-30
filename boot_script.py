@@ -52,7 +52,7 @@ def main():
         except:
             logging.error(f"Failed loading: { boot_object['id'] }")
 
-    os.system(f'./Scripts/post_boot_script.sh {ROOT_PATH}')
+    os.system(f'{ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
 
     pass
 
