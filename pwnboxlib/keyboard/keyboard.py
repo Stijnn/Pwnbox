@@ -2,7 +2,7 @@ from os.path import exists
 from time import sleep
 from typing import List
 
-from keyboard.keytranslation import *
+from keytranslation import *
 
 class Keyboard():
     def __init__(self, gadget_path) -> None:
