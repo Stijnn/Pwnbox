@@ -60,7 +60,7 @@ def main():
 
     try:
         result = subprocess.getoutput(f'{ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
-        logging.info(f'{result}')
+        logging.info(f'STDOUT: {result}')
     except:
         logging.error(f'Something went wrong with invoking post_boot_script...')
 

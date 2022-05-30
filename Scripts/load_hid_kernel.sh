@@ -19,13 +19,8 @@ echo "Pwnbox Gadget Box" > strings/0x409/product
 
 mkdir -p configs/c.1/strings/0x409
 
-echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
-echo 250 > configs/c.1/MaxPower
-# Add functions here
-
 cd $1
 python $1/boot_script.py /sys/kernel/config/usb_gadget/pwnbox_kernel
 
-# End functions
 cd /sys/kernel/config/usb_gadget/pwnbox_kernel
 ls /sys/class/udc > UDC
