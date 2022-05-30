@@ -56,6 +56,7 @@ def main():
             logging.error(f"Failed loading: { boot_object['id'] }")
 
     sleep(10)
+    logging.info(f'Invoking: {ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}')
     result = subprocess.check_output(f'{ROOT_PATH}/Scripts/post_boot_script.sh {ROOT_PATH}', shell=True)
     logging.info(f'{result}')
 
