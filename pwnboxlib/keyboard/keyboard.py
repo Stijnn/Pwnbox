@@ -3,10 +3,10 @@ from time import sleep
 from typing import List
 
 from pwncore.pwncore import USBDevice
-from keyboard.key_translation import USB_CHARACTER_TRANSLATION_KEYCODES, KeyboardModifiers, KeyboardKeys
+from keyboard.keytranslation import *
 
 
-class Keyboard(USBDevice):
+class Keyboard():
     def __init__(self, gadget_path) -> None:
         if exists(gadget_path):
             super().__init__({
@@ -16,12 +16,17 @@ class Keyboard(USBDevice):
             super().__init__({
                 "gadget_path": None
             })
+        self.gadget = None
         pass
+
+
+    def __create_report__(self):
+        return KEY_NONE*8
 
 
     def __open_device__(self):
         if self.gadget == None:
-            self.gadget = open(self.__device_info__['gadget_path'], 'wb') 
+            self.gadget = open(self.__device_info__['gadget_path'], 'wb+') 
         return self.gadget
 
 
@@ -32,51 +37,57 @@ class Keyboard(USBDevice):
         pass
 
 
-    def __write__(self, data):
+    def __write__(self, report: str):
         d = self.__open_device__()
-        d.write(data)
+        d.write(report.encode())
         self.__close_device__()
         pass
 
 
-    def __write_char__(self, character: str):
-        key_meta_data = USB_CHARACTER_TRANSLATION_KEYCODES.get(character)
-        if key_meta_data == None:
-            return
-
-        key_buffer = bytes(8)
-
-        if key_meta_data[0]:
-            key_buffer[0] |= KeyboardModifiers.KEY_MOD_LSHIFT
-        
-        key_buffer[2] = bytes([key_meta_data[1]])
-
-        self.__write__(key_buffer[0:8])
-        sleep(0.0001)
-        self.release_keys()
+    def __write_zero_report__(self):
+        self.__write__(self.__create_report__())
         pass
 
 
-    def send_text(self, text: str):
+    def __write_text__(self, text: str):
         for c in text:
-            self.__send_char__(c)
+            b = self.__create_report__()
+            meta = USB_CHARACTER_TRANSLATION_KEYCODES.get(c)
+            if meta[0]:
+                b[0] = chr(ord(b[0]) + KEY_MOD_LSHIFT)
+            b[2] = chr(meta[1])
+            self.__write__(b)
+            sleep(0.001)
+            self.__write_zero_report__()
         pass
 
 
-    def release_keys(self):
-        d = self.__open_device__()
-        d.write(bytes(8))
-        self.__close_device__()
+    def write(self, text: str):
+        self.__write_text__(text)
         pass
 
 
-    def press_key(self, key: KeyboardKeys, modifiers: List[KeyboardModifiers], release=True):
-        b = bytes(8)
+    def write_line(self, text: str):
+        self.__write_text__(text)
+        sleep(0.001)
+        self.__write_zero_report__()
+        sleep(0.001)
+        enter_report    = self.__create_report__()
+        enter_report[2] = KEY_ENTER
+        self.write(enter_report)
+
+    
+    def press_key(self, key: str, modifiers: List[str] = [KEY_NONE], release=True):
+        report = self.__create_report__()
+        
         for mod in modifiers:
-            b[0] |= mod
-        b[2] = key
-        self.__write__(b)
+            if len(mod) == 1:
+                report[0] = chr(ord(report[0]) + ord(mod))
+        
+        report[2] = key
+        self.__write__(report)
         if release:
-            sleep(0.0001)
-            self.release_keys()
+            sleep(0.001)
+            self.__write_zero_report__()
+
         pass
