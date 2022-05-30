@@ -51,6 +51,9 @@ class Keyboard():
         for c in text:
             b = list(self.__create_report__())
             meta = USB_CHARACTER_TRANSLATION_KEYCODES.get(c)
+            if meta == None:
+                continue
+
             if meta[0]:
                 b[0] = chr(ord(b[0]) + ord(KEY_MOD_LSHIFT))
             b[2] = chr(meta[1])
