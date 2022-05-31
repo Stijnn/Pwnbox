@@ -1,5 +1,6 @@
 import os
 import configparser
+import sys
 
 from termcolor import colored
 from genericpath import exists
@@ -9,8 +10,9 @@ from genericpath import exists
 #
 
 PWN_CONFIG_FILE_PATH = '/etc/pwnbox/pwncfg.ini'
-PWN_SCRIPT_FOLDER = os.getcwd() + '/Scripts'
-PWN_BOOT_SHELL_SCRIPT_FILE_PATH = PWN_SCRIPT_FOLDER + '/load_hid_kernel.sh'
+
+PWN_ROOT = os.path.dirname(sys.argv[0]) 
+PWN_BOOT_SHELL_SCRIPT_FILE_PATH = PWN_ROOT + '/pwnbox_cli.py --load'
 
 RC_LOCAL_FILE_PATH = '/etc/rc.local'
 
@@ -60,7 +62,7 @@ def bypass_rc_local():
         if line.startswith('#'):
             new_lines.append(line)
             continue
-        elif line.__contains__(PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd()):
+        elif line.__contains__(PWN_BOOT_SHELL_SCRIPT_FILE_PATH):
             print(colored(f"[~] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} already exists. Skipping creation...", "yellow"))
             check_hit = True
             new_lines.append(line)
@@ -69,7 +71,7 @@ def bypass_rc_local():
             if not check_hit:
                 print(colored(f"[#] Bypass to {PWN_BOOT_SHELL_SCRIPT_FILE_PATH} created. Now writing changes...", "green"))
                 check_hit = True
-                new_lines.append(line.replace('exit 0', PWN_BOOT_SHELL_SCRIPT_FILE_PATH + ' ' + os.getcwd() +" \r\nexit 0"))
+                new_lines.append(line.replace('exit 0', PWN_BOOT_SHELL_SCRIPT_FILE_PATH + '\r\nexit 0'))
             else:
                 new_lines.append(line)
         else:
