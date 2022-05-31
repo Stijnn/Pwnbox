@@ -1,15 +1,34 @@
+import os
 from os.path import exists
 from time import sleep
 from typing import List
 
 from keytranslation import *
+from pwnboxlib.proxydevice import ProxyDevice
 
-class Keyboard():
+
+class KeyboardProxy(ProxyDevice):
+    def __init__(self, device_name: str) -> None:
+        super().__init__(device_name)
+
+    
+    def __load__(self):
+        os.system(f'echo 1 > functions/{self.device_name}/protocol')
+        os.system(f'echo 1 > functions/{self.device_name}/subclass')
+        os.system(f'echo 8 > functions/{self.device_name}/report_length')
+        os.system(f'echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02\\x95\\x01\\x75\\x08\\x81\\x03\\x95\\x05\\x75\\x01\\x05\\x08\\x19\\x01\\x29\\x05\\x91\\x02\\x95\\x01\\x75\\x03\\x91\\x03\\x95\\x06\\x75\\x08\\x15\\x00\\x25\\x65\\x05\\x07\\x19\\x00\\x29\\x65\\x81\\x00\\xc0 > functions/{self.device_name}/report_desc')
+
+
+class Keyboard:
     def __init__(self, gadget_path) -> None:
         self.__device_info__ = {
             "gadget_path": gadget_path
         }
         self.gadget = None
+        pass
+
+
+    def __create_device__(self):
         pass
 
 

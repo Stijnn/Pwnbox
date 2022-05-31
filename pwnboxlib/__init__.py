@@ -1,5 +1,2 @@
-from pwncore.pwncore import USBDevice
-
-
-from pwncore import *
-from keyboard import *
+#from pwncore import *
+#from keyboard import *
