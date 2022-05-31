@@ -4,6 +4,7 @@ import argparse
 from genericpath import exists
 import os
 import logging
+import queue
 import sys
 
 import subprocess
@@ -18,7 +19,7 @@ from pwnlogger import log_error, log_verbose, log_warning, log
 USB_GADGET_NAME = "pwnbox_gadget"
 PWNBOX_CONFIG = '/etc/pwnbox/pwncfg.ini'
 GADGET_PATH = f'/sys/kernel/config/usb_gadget/{USB_GADGET_NAME}'
-PWNBOX_PATH =  os.path.dirname(sys.argv[0])
+PWNBOX_PATH =  os.path.abspath(os.path.dirname(sys.argv[0]))
 
 
 GADGET_CONFIG = dict({
@@ -47,7 +48,7 @@ DEVICE_CONFIG = dict({
 
 
 def start_load(device: ProxyDevice):
-    device.load_device()
+    device.build()
     pass
 
 
@@ -64,13 +65,13 @@ def chdir_pwnbox():
 
 
 def on_post_device_creation():
-    for k,v in DEVICE_CONFIG:
+    for k,v in DEVICE_CONFIG.items():
         if not v.__contains__('should_enable'):
             continue
 
         if chdir_gadget():
-            if isinstance(v['should_enable'], ProxyDevice):
-                start_load(v['should_enable'])
+            if isinstance(v['proxy_type'], ProxyDevice):
+                start_load(v['proxy_type'])
 
     chdir_pwnbox()
     pass
@@ -94,18 +95,18 @@ def load_gadget():
     log_verbose(f'Creating {GADGET_PATH}')
     os.system(f'mkdir -p {GADGET_PATH}')
     if chdir_gadget():
-        for k,v in GADGET_CONFIG:
+        for k,v in GADGET_CONFIG.items():
             log_verbose(f'echo {v} > {k}')
             os.system(f'echo {v} > {k}')
 
-        for k, v in STRINGS_CONFIG:
-            os.mkdir(f'mkdir -p strings/{k}')
+        for k, v in STRINGS_CONFIG.items():
+            os.system(f'mkdir -p strings/{k}')
             os.system(f'echo {v["serialnumber"]} > strings/{k}/serialnumber')
             os.system(f'echo {v["manufacturer"]} > strings/{k}/manufacturer')
             os.system(f'echo {v["product"]} > strings/{k}/product')
             pass
 
-        os.mkdir(f'mkdir -p configs/c.1/strings/0x409')
+        os.system(f'mkdir -p configs/c.1/strings/0x409')
         os.system('echo "Config 1: RNDIS network" > configs/c.1/strings/0x409/configuration')
         os.system('echo 250 > configs/c.1/MaxPower')
         os.system('echo 0x80 > configs/c.1/bmAttributes')
@@ -124,13 +125,32 @@ def load_gadget():
 def unload_gadget():
     if chdir_gadget():
         disable_udc()
-        os.system('rm -rf configs/*')
-        os.system('rm -rf functions/*')
-        os.system('rm -rf strings/*')
-        os.chdir('..')
-        os.system(f'rm -rf {GADGET_PATH}')
+
+        first_in_order = ['configs', 'functions', 'strings']
+        for d in first_in_order:
+            filo_paths = queue.LifoQueue()
+            for path, subdirs, files in os.walk(f'{GADGET_PATH}/{d}'):
+                for file in files:
+                    log_warning(f'Removing: {file}')
+                    log_verbose(os.system(f'rm -rf {path}/{file}'))
+
+                for dir in subdirs:
+                    filo_paths.put(path +'/'+ dir)
+            
+            while not filo_paths.empty():
+                path = filo_paths.get()
+                log_warning(f'Removing: {path}')
+                log_verbose(os.system(f'rm -f {path}'))
+                log_verbose(os.system(f'rmdir {path}'))
+
+        log_warning(f'Removing: {GADGET_PATH}')
+        os.rmdir(GADGET_PATH)
         chdir_pwnbox()
-        log('Succesfully unloaded gadget...')
+
+        if not os.path.exists(GADGET_PATH):
+            log('Succesfully unloaded gadget...')
+        else:
+            log_error(f'Could not fully remove {GADGET_PATH}')
     else:
         log_warning('Gadget has not yet been loaded. Skipping unload...')
     pass
