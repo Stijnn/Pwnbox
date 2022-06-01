@@ -11,10 +11,13 @@ import subprocess
 
 from datetime import datetime
 from time import sleep
+from pwnboxlib.cdc_ecm.cdc_ecm import EthernetProxy
+from pwnboxlib.mouse.mouse import MouseProxy
 
 from pwnboxlib.proxydevice import ProxyDevice
 from pwnboxlib.keyboard.keyboard import KeyboardProxy
 from pwnboxlib.mass_storage.mass_storage import StorageProxy
+from pwnboxlib.rndis.rndis import RNDISProxy
 
 from pwnlogger import log_error, log_verbose, log_warning, log
 
@@ -52,6 +55,18 @@ DEVICE_CONFIG = dict({
     'STORAGE': { 
         'should_enable': config.getboolean('TYPES', 'STORAGE'),
         'proxy_type': StorageProxy('mass_storage.usb0', f'{PWNBOX_PATH}/diskimage.img')
+    },
+    'CDC_ECM': { 
+        'should_enable': config.getboolean('TYPES', 'CDC_ECM'),
+        'proxy_type': EthernetProxy('ecm.usb0')
+    },
+    'RNDIS': { 
+        'should_enable': config.getboolean('TYPES', 'RNDIS'),
+        'proxy_type': RNDISProxy('rndis.usb0')
+    },
+    'MOUSE': { 
+        'should_enable': config.getboolean('TYPES', 'MOUSE'),
+        'proxy_type': MouseProxy('hid.usb1')
     }
 })
 

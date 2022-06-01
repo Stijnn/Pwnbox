@@ -43,7 +43,10 @@ def set_default_config():
 
     config["TYPES"] = {
         "KEYBOARD": False,
-        "STORAGE": False
+        "STORAGE": False,
+        "CDC_ECM": False,
+        "RNDIS": False,
+        "MOUSE": False
     }
 
     with open(PWN_CONFIG_FILE_PATH, 'w') as configfile:
