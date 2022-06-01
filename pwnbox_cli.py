@@ -13,6 +13,9 @@ from datetime import datetime
 from time import sleep
 
 from pwnboxlib.proxydevice import ProxyDevice
+from pwnboxlib.keyboard.keyboard import KeyboardProxy
+from pwnboxlib.mass_storage.mass_storage import StorageProxy
+
 from pwnlogger import log_error, log_verbose, log_warning, log
 
 
@@ -44,11 +47,11 @@ STRINGS_CONFIG = dict({
 DEVICE_CONFIG = dict({
     'KEYBOARD': { 
         'should_enable': config.getboolean('TYPES', 'KEYBOARD'),
-        'proxy_type': ProxyDevice('hid.usb0')
+        'proxy_type': KeyboardProxy('hid.usb0')
     },
     'STORAGE': { 
         'should_enable': config.getboolean('TYPES', 'STORAGE'),
-        'proxy_type': ProxyDevice('mass_storage.usb0')
+        'proxy_type': StorageProxy('mass_storage.usb0', f'{PWNBOX_PATH}/diskimage.img')
     }
 })
 

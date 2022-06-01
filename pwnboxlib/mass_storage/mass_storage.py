@@ -9,12 +9,11 @@ class StorageProxy(ProxyDevice):
 
     
     def __load__(self):
-        log(system('mkdir -p ${' + self.image_location + '/img/d}'))
-        log(system('mount -o loop,ro, -t vfat ' + self.image_location + ' ${' + self.image_location + '/img/d}'))
+        #log(system(f'mkdir -p {self.image_location}/img/d'))
+        #log(system(f'mount -o loop,ro, -t vfat {self.image_location} {self.image_location}/img/d'))
         log(system(f'mkdir -p functions/{self.device_name}'))
         log(system(f'echo 1 > functions/{self.device_name}/stall'))
         log(system(f'echo 0 > functions/{self.device_name}/lun.0/cdrom'))
         log(system(f'echo 0 > functions/{self.device_name}/lun.0/ro'))
         log(system(f'echo 0 > functions/{self.device_name}/lun.0/nofua'))
         log(system(f'echo {self.image_location} > functions/{self.device_name}/lun.0/file'))
-        log(system(f'ln -s functions/{self.device_name} configs/c.1/'))

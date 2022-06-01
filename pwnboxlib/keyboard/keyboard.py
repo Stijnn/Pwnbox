@@ -3,7 +3,7 @@ from os.path import exists
 from time import sleep
 from typing import List
 
-from keytranslation import *
+from pwnboxlib.keyboard.keytranslation import *
 from pwnboxlib.proxydevice import ProxyDevice
 
 
