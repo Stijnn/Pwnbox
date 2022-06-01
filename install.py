@@ -43,7 +43,8 @@ def set_default_config():
     config.read(PWN_CONFIG_FILE_PATH)
 
     config["TYPES"] = {
-        "KEYBOARD": False
+        "KEYBOARD": False,
+        "STORAGE": False
     }
 
     with open(PWN_CONFIG_FILE_PATH, 'w') as configfile:
@@ -85,9 +86,18 @@ def bypass_rc_local():
     pass
 
 
+def create_mass_storage_image():
+    image_location = f'{PWN_ROOT}/diskimage.img'
+    os.system(f'dd if=/dev/zero of={image_location} count=1024 bs=1M')
+    os.system(f'mkdosfs {image_location}')
+    pass
+
+
 def main():
     set_default_config()
     bypass_rc_local()
+
+    create_mass_storage_image()
     pass
 
 

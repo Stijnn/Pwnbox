@@ -21,6 +21,8 @@ PWNBOX_CONFIG = '/etc/pwnbox/pwncfg.ini'
 GADGET_PATH = f'/sys/kernel/config/usb_gadget/{USB_GADGET_NAME}'
 PWNBOX_PATH =  os.path.abspath(os.path.dirname(sys.argv[0]))
 
+config = configparser.ConfigParser()
+config.read(PWNBOX_CONFIG)
 
 GADGET_CONFIG = dict({
     'idVendor'  : 0x1d6b,
@@ -41,8 +43,12 @@ STRINGS_CONFIG = dict({
 
 DEVICE_CONFIG = dict({
     'KEYBOARD': { 
-        'should_enable': True,
+        'should_enable': config.getboolean('TYPES', 'KEYBOARD'),
         'proxy_type': ProxyDevice('hid.usb0')
+    },
+    'KEYBOARD': { 
+        'should_enable': config.getboolean('TYPES', 'STORAGE'),
+        'proxy_type': ProxyDevice('mass_storage.usb0')
     }
 })
 
@@ -182,6 +188,10 @@ def main():
     if not is_root():
         log_error('This program requires root privilages to run. Please use sudo.')
         return
+
+    print('\r\n\r\n')
+    [print(x) for x in open(f'{PWNBOX_PATH}/banner.txt', 'r').readlines()]
+    print('\r\n\r\n')
 
     if args.load:       load_gadget()
     if args.disable:    disable_udc()
