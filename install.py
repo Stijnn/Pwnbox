@@ -12,7 +12,7 @@ from genericpath import exists
 PWN_CONFIG_FILE_PATH = '/etc/pwnbox/pwncfg.ini'
 
 PWN_ROOT = os.path.abspath(os.path.dirname(sys.argv[0]))
-PWN_BOOT_SHELL_SCRIPT_FILE_PATH = 'python3 ' + PWN_ROOT + '/pwnbox_cli.py --load'
+PWN_BOOT_SHELL_SCRIPT_FILE_PATH = 'python3 ' + PWN_ROOT + '/pwnbox_cli.py --load '
 
 RC_LOCAL_FILE_PATH = '/etc/rc.local'
 
