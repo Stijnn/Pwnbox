@@ -191,7 +191,7 @@ def main():
         return
 
     print('\r\n\r\n')
-    [print(x) for x in open(f'{PWNBOX_PATH}/banner.txt', 'r').readlines()]
+    [print(x.replace('\n', '')) for x in open(f'{PWNBOX_PATH}/banner.txt', 'r').readlines()]
     print('\r\n\r\n')
 
     if args.load:       load_gadget()
