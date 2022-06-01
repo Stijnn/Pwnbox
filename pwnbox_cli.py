@@ -46,7 +46,7 @@ DEVICE_CONFIG = dict({
         'should_enable': config.getboolean('TYPES', 'KEYBOARD'),
         'proxy_type': ProxyDevice('hid.usb0')
     },
-    'KEYBOARD': { 
+    'STORAGE': { 
         'should_enable': config.getboolean('TYPES', 'STORAGE'),
         'proxy_type': ProxyDevice('mass_storage.usb0')
     }
@@ -77,6 +77,7 @@ def on_post_device_creation():
 
         if chdir_gadget():
             if isinstance(v['proxy_type'], ProxyDevice):
+                log(f'Loading: {k} with Proxy({ type(v["proxy_type"]) }) named {v["proxy_type"].device_name}')
                 start_load(v['proxy_type'])
 
     chdir_pwnbox()
