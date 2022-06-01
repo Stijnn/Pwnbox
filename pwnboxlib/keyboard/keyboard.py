@@ -28,10 +28,6 @@ class Keyboard:
         pass
 
 
-    def __create_device__(self):
-        pass
-
-
     def __create_report__(self):
         return KEY_NONE*8
 
