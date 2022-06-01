@@ -89,8 +89,9 @@ def bypass_rc_local():
 def create_mass_storage_image():
     image_location = f'{PWN_ROOT}/diskimage.img'
     print(f'Image location {image_location}')
-    execute_os_cmd('Creating image using DD...', f'dd if=/dev/zero of={image_location} count=1024 bs=1M')
-    execute_os_cmd('Making FAT32 MS-DOS FileSystem...', f'mkdosfs {image_location}')
+    if not exists(image_location):
+        if execute_os_cmd('Creating image using DD...', f'dd if=/dev/zero of={image_location} count=1024 bs=1M') == 0:
+            execute_os_cmd('Making FAT32 MS-DOS FileSystem...', f'mkdosfs {image_location}')
     pass
 
 
