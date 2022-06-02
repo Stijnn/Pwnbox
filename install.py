@@ -102,6 +102,9 @@ def main():
     bypass_rc_local()
 
     create_mass_storage_image()
+
+    execute_os_cmd('Update system', 'sudo apt -y update && sudo apt -y upgrade')
+
     pass
 
 

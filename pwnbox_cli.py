@@ -11,15 +11,15 @@ import subprocess
 
 from datetime import datetime
 from time import sleep
-from pwnboxlib.cdc_ecm.cdc_ecm import EthernetProxy
-from pwnboxlib.mouse.mouse import MouseProxy
+from pwnboxlib.cdc_ecm.cdc_ecm import EthernetFactory
+from pwnboxlib.mouse.mouse import MouseFactory
 
-from pwnboxlib.proxydevice import ProxyDevice
-from pwnboxlib.keyboard.keyboard import KeyboardProxy
-from pwnboxlib.mass_storage.mass_storage import StorageProxy
-from pwnboxlib.rndis.rndis import RNDISProxy
+from pwnboxlib.devicefactory import DeviceFactory
+from pwnboxlib.keyboard.keyboard import KeyboardFactory
+from pwnboxlib.mass_storage.mass_storage import StorageFactory
+from pwnboxlib.rndis.rndis import RNDISFactory
 
-from pwnlogger import log_error, log_verbose, log_warning, log
+from pwnlogger import log_command, log_error, log_ok, log_verbose, log_warning, set_log_file
 
 
 USB_GADGET_NAME = "pwnbox_gadget"
@@ -50,28 +50,28 @@ STRINGS_CONFIG = dict({
 DEVICE_CONFIG = dict({
     'KEYBOARD': { 
         'should_enable': config.getboolean('TYPES', 'KEYBOARD'),
-        'proxy_type': KeyboardProxy('hid.usb0')
+        'proxy_type': KeyboardFactory('hid.usb0')
     },
     'STORAGE': { 
         'should_enable': config.getboolean('TYPES', 'STORAGE'),
-        'proxy_type': StorageProxy('mass_storage.usb0', f'{PWNBOX_PATH}/diskimage.img')
+        'proxy_type': StorageFactory('mass_storage.usb0', f'{PWNBOX_PATH}/diskimage.img')
     },
     'CDC_ECM': { 
         'should_enable': config.getboolean('TYPES', 'CDC_ECM'),
-        'proxy_type': EthernetProxy('ecm.usb0')
+        'proxy_type': EthernetFactory('ecm.usb0')
     },
     'RNDIS': { 
         'should_enable': config.getboolean('TYPES', 'RNDIS'),
-        'proxy_type': RNDISProxy('rndis.usb0')
+        'proxy_type': RNDISFactory('rndis.usb0')
     },
     'MOUSE': { 
         'should_enable': config.getboolean('TYPES', 'MOUSE'),
-        'proxy_type': MouseProxy('hid.usb1')
+        'proxy_type': MouseFactory('hid.usb1')
     }
 })
 
 
-def start_load(device: ProxyDevice):
+def start_load(device: DeviceFactory):
     device.build()
     pass
 
@@ -93,9 +93,12 @@ def on_post_device_creation():
         if not v.__contains__('should_enable'):
             continue
 
+        if not v['should_enable']:
+            continue
+
         if chdir_gadget():
-            if isinstance(v['proxy_type'], ProxyDevice):
-                log(f'Loading: {k} with Proxy({ type(v["proxy_type"]) }) named {v["proxy_type"].device_name}')
+            if isinstance(v['proxy_type'], DeviceFactory):
+                log_ok(f'Loading: {k} with Proxy({ type(v["proxy_type"]) }) named {v["proxy_type"].device_name}')
                 start_load(v['proxy_type'])
 
     chdir_pwnbox()
@@ -104,9 +107,9 @@ def on_post_device_creation():
 
 def disable_udc():
     if chdir_gadget():
-        os.system('echo "" > UDC')
+        log_command('echo "" > UDC')
         chdir_pwnbox()
-        log('Succesfully disabled gadget...')
+        log_ok('Succesfully disabled gadget...')
     else:
         log_warning('Device does not exists. Skipping disabling...')
     pass
@@ -118,32 +121,32 @@ def load_gadget():
         return
 
     log_verbose(f'Creating {GADGET_PATH}')
-    os.system(f'mkdir -p {GADGET_PATH}')
+    log_command(f'mkdir -p {GADGET_PATH}')
     if chdir_gadget():
         for k,v in GADGET_CONFIG.items():
             log_verbose(f'echo {v} > {k}')
-            os.system(f'echo {v} > {k}')
+            log_command(f'echo {v} > {k}')
 
         for k, v in STRINGS_CONFIG.items():
-            os.system(f'mkdir -p strings/{k}')
-            os.system(f'echo {v["serialnumber"]} > strings/{k}/serialnumber')
-            os.system(f'echo {v["manufacturer"]} > strings/{k}/manufacturer')
-            os.system(f'echo {v["product"]} > strings/{k}/product')
+            log_command(f'mkdir -p strings/{k}')
+            log_command(f'echo {v["serialnumber"]} > strings/{k}/serialnumber')
+            log_command(f'echo {v["manufacturer"]} > strings/{k}/manufacturer')
+            log_command(f'echo {v["product"]} > strings/{k}/product')
             pass
 
-        os.system(f'mkdir -p configs/c.1/strings/0x409')
-        os.system('echo "Config 1: RNDIS network" > configs/c.1/strings/0x409/configuration')
-        os.system('echo 250 > configs/c.1/MaxPower')
-        os.system('echo 0x80 > configs/c.1/bmAttributes')
+        log_command(f'mkdir -p configs/c.1/strings/0x409')
+        log_command('echo "Config 1: RNDIS network" > configs/c.1/strings/0x409/configuration')
+        log_command('echo 250 > configs/c.1/MaxPower')
+        log_command('echo 0x80 > configs/c.1/bmAttributes')
 
         chdir_pwnbox()
         on_post_device_creation()
 
         if chdir_gadget():
-            os.system('ls /sys/class/udc > UDC')
+            log_command('ls /sys/class/udc > UDC')
 
         chdir_pwnbox()
-        log('Succesfully loaded gadget...')
+        log_ok('Succesfully loaded gadget...')
     pass
 
 
@@ -157,7 +160,7 @@ def unload_gadget():
             for path, subdirs, files in os.walk(f'{GADGET_PATH}/{d}'):
                 for file in files:
                     log_warning(f'Removing: {file}')
-                    log_verbose(os.system(f'rm -rf {path}/{file}'))
+                    log_command(f'rm -rf {path}/{file}')
 
                 for dir in subdirs:
                     filo_paths.put(path +'/'+ dir)
@@ -165,8 +168,8 @@ def unload_gadget():
             while not filo_paths.empty():
                 path = filo_paths.get()
                 log_warning(f'Removing: {path}')
-                log_verbose(os.system(f'rm -f {path}'))
-                log_verbose(os.system(f'rmdir {path}'))
+                log_command(f'rm -f {path}')
+                log_command(f'rmdir {path}')
 
         log_warning(f'Removing: {GADGET_PATH}')
         os.rmdir(GADGET_PATH)
@@ -197,6 +200,7 @@ parser = argparse.ArgumentParser(description='Pwnbox Command Line Interface Util
 parser.add_argument('--load', action='store_true', help='Load gadget if unloaded.')
 parser.add_argument('--unload', action='store_true', help='Unload gadget if loaded.')
 parser.add_argument('--disable', action='store_true', help='Disable the gadget but dont unload')
+parser.add_argument('--no-logging', action='store_true', help='Do not create a logfile')
 
 # 
 
@@ -207,6 +211,10 @@ def main():
     if not is_root():
         log_error('This program requires root privilages to run. Please use sudo.')
         return
+
+    if not args['no-logging']:
+        log_command(f'mkdir -p {PWNBOX_PATH}/logs/')
+        set_log_file(f'{PWNBOX_PATH}/logs/log_{datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}')
 
     print('\r\n\r\n')
     [print(x.replace('\n', '')) for x in open(f'{PWNBOX_PATH}/banner.txt', 'r').readlines()]
