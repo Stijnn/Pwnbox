@@ -9,7 +9,7 @@ import sys
 
 import subprocess
 
-from datetime import datetime
+import datetime
 from time import sleep
 from pwnboxlib.cdc_ecm.cdc_ecm import EthernetFactory
 from pwnboxlib.mouse.mouse import MouseFactory
