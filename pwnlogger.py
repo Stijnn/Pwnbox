@@ -11,6 +11,9 @@ def set_log_file(log_file: str = None):
 def __log__(code, color, text: str):
     print(f'[ {colored(code, color)} ] {text}')
     
+    if LOG_FILE_PATH == None:
+        return
+
     if not exists(LOG_FILE_PATH):
         log_command(f'touch {LOG_FILE_PATH}')
         log_command(f'chmod +rw {LOG_FILE_PATH}')
