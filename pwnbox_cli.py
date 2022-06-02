@@ -176,7 +176,7 @@ def unload_gadget():
         chdir_pwnbox()
 
         if not os.path.exists(GADGET_PATH):
-            log('Succesfully unloaded gadget...')
+            log_ok('Succesfully unloaded gadget...')
         else:
             log_error(f'Could not fully remove {GADGET_PATH}')
     else:
@@ -212,13 +212,13 @@ def main():
         log_error('This program requires root privilages to run. Please use sudo.')
         return
 
-    #if not args['no-logging']:
-    log_command(f'mkdir -p {PWNBOX_PATH}/logs/')
-    set_log_file(f'{PWNBOX_PATH}/logs/log_{datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}')
-
     print('\r\n\r\n')
     [print(x.replace('\n', '')) for x in open(f'{PWNBOX_PATH}/banner.txt', 'r').readlines()]
     print('\r\n\r\n')
+
+    #if not args['no-logging']:
+    log_command(f'mkdir -p {PWNBOX_PATH}/logs/')
+    set_log_file(f'{PWNBOX_PATH}/logs/log_{datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}')
 
     if args.load:       load_gadget()
     if args.disable:    disable_udc()

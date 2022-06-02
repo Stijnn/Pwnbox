@@ -103,6 +103,9 @@ def main():
 
     create_mass_storage_image()
 
+    execute_os_cmd('Enable USB Kernel', 'echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt')
+    execute_os_cmd('Enable USB Kernel', 'echo "dwc2" | sudo tee -a /etc/modules')
+    execute_os_cmd('Enable USB Kernel', 'sudo echo "libcomposite" | sudo tee -a /etc/modules')
     execute_os_cmd('Update system', 'sudo apt -y update && sudo apt -y upgrade')
 
     pass
