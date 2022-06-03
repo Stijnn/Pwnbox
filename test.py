@@ -1,7 +1,7 @@
 import sys
 from time import sleep
-from keyboard import Keyboard
-from keytranslation import *
+from pwnboxlib.keyboard.keyboard import Keyboard
+from pwnboxlib.keyboard.keytranslation import *
 
 kb = Keyboard.get()
 if kb == None:

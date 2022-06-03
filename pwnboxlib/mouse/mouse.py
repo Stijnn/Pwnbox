@@ -20,8 +20,9 @@ class Mouse():
     @staticmethod
     def get():
         if exists('/tmp/pwnbox/mouse'):
-            device_name = open('/tmp/pwnbox/mouse', 'r').readline()
-            return Mouse(f'/dev/{device_name}')
+            with open('/tmp/pwnbox/mouse', 'r') as tmpfile:
+                device_name = tmpfile.readline().strip()
+                return Mouse(device_name) 
         else:
             return None
 
@@ -38,23 +39,9 @@ class Mouse():
         return chr(0)*3
 
 
-    def __open_device__(self):
-        if self.gadget == None:
-            self.gadget = open(self.__device_info__['gadget_path'], 'wb+') 
-        return self.gadget
-
-
-    def __close_device__(self):
-        if self.gadget:
-            self.gadget.close()
-            self.gadget = None
-        pass
-
-
     def __write__(self, report: str):
-        d = self.__open_device__()
-        d.write(report.encode())
-        self.__close_device__()
+        with open(self.__device_info__['gadget_path'], 'wb+') as file:
+            file.write(report.encode())
         pass
 
 
