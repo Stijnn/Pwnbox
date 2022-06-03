@@ -34,7 +34,7 @@ def scripts():
 
 
 def main():
-    app.run()
+    app.run('0.0.0.0', 5000)
     pass
 
 
