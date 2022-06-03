@@ -1,0 +1,3 @@
+[submodule "scripts/usbrubberducky-payloads"]
+	path = scripts/usbrubberducky-payloads
+	url = https://github.com/hak5/usbrubberducky-payloads.git
