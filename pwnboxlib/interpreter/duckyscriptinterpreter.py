@@ -2,7 +2,7 @@ from genericpath import exists
 from time import sleep
 from pwnboxlib.keyboard.keyboard import Keyboard
 from pwnboxlib.keyboard.keytranslation import *
-from pwnlogger import log_warning
+from pwnlogger import log_ok, log_warning
 
 
 ducky_keylink_params = {
@@ -107,6 +107,8 @@ def exec_ducky_function(line: str, kb: Keyboard, prev_line: str = None):
 class DuckyScriptInterpeter:
     @staticmethod
     def exec_script(script_file_path: str) -> bool:
+        log_ok(f'Running: {script_file_path}')
+
         if not exists(script_file_path):
             return False
 
