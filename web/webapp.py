@@ -1,11 +1,12 @@
 import os
 from flask import Flask, redirect, request, url_for
+from pwnboxlib.interpreter.duckyscriptinterpreter import DuckyScriptInterpeter
 
 app = Flask(__name__)
 
 
 script_links = {}
-script_count = 0
+script_count = 1
 for dir, sdir, file in os.walk('../scripts/usbrubberducky-payloads/payloads/library/'):
     if 'payload.txt' in file:
         fullpath = dir + '/' + 'payload.txt'
@@ -19,7 +20,7 @@ def run_script():
     if request.form['script']:
         script_link = str(request.form['script'])
         if script_link in script_links:
-            print(script_links[script_link])
+            DuckyScriptInterpeter.exec_script(os.path.abspath(script_links[script_link]))
     return redirect('/')
 
 

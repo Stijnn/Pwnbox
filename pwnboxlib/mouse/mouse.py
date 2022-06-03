@@ -1,3 +1,4 @@
+from genericpath import exists
 import math
 import os
 from pwnboxlib.devicefactory import DeviceFactory
@@ -16,6 +17,15 @@ class MouseFactory(DeviceFactory):
 
 
 class Mouse():
+    @staticmethod
+    def get():
+        if exists('/tmp/pwnbox/mouse'):
+            device_name = open('/tmp/pwnbox/mouse', 'r').readline()
+            return Mouse(f'/dev/{device_name}')
+        else:
+            return None
+
+
     def __init__(self, gadget_path) -> None:
         self.__device_info__ = {
             "gadget_path": gadget_path

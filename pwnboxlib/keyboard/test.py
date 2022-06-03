@@ -1,8 +1,11 @@
+import sys
 from time import sleep
 from keyboard import Keyboard
 from keytranslation import *
 
-kb = Keyboard('/dev/hidg0')
+kb = Keyboard.get()
+if kb == None:
+    sys.exit()
 
 sleep(.500)
 kb.press_key(KEY_R, [KEY_MOD_LMETA])

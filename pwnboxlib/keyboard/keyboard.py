@@ -21,6 +21,15 @@ class KeyboardFactory(DeviceFactory):
 
 
 class Keyboard:
+    @staticmethod
+    def get():
+        if exists('/tmp/pwnbox/keyboard'):
+            device_name = open('/tmp/pwnbox/keyboard', 'r').readline()
+            Keyboard(f'/dev/{device_name}') 
+        else: 
+            return None
+
+
     def __init__(self, gadget_path) -> None:
         self.__device_info__ = {
             "gadget_path": gadget_path

@@ -110,6 +110,10 @@ class DuckyScriptInterpeter:
         if not exists(script_file_path):
             return False
 
+        keyboard_device = Keyboard.get()
+        if keyboard_device == None:
+            return False
+
         file_handle = open(script_file_path, 'r')
         lines = file_handle.readlines()
         file_handle.close()
@@ -121,5 +125,7 @@ class DuckyScriptInterpeter:
                 delay_per_func = float(l.split[1]) / 100
 
         for l in lines:
-            exec_ducky_function(l)
+            exec_ducky_function(l, keyboard_device)
             sleep(delay_per_func)
+
+        return True

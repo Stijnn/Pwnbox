@@ -50,23 +50,30 @@ STRINGS_CONFIG = dict({
 DEVICE_CONFIG = dict({
     'KEYBOARD': { 
         'should_enable': config.getboolean('TYPES', 'KEYBOARD'),
-        'proxy_type': KeyboardFactory('hid.usb0')
+        'proxy_type': KeyboardFactory('hid.usb0'),
+        'add_to_tmp': True,
+        'tmp_name': 'keyboard'
     },
     'STORAGE': { 
         'should_enable': config.getboolean('TYPES', 'STORAGE'),
-        'proxy_type': StorageFactory('mass_storage.usb0', f'{PWNBOX_PATH}/diskimage.img')
+        'proxy_type': StorageFactory('mass_storage.usb0', f'{PWNBOX_PATH}/diskimage.img'),
+        'add_to_tmp': False
     },
     'CDC_ECM': { 
         'should_enable': config.getboolean('TYPES', 'CDC_ECM'),
-        'proxy_type': EthernetFactory('ecm.usb0')
+        'proxy_type': EthernetFactory('ecm.usb0'),
+        'add_to_tmp': False
     },
     'RNDIS': { 
         'should_enable': config.getboolean('TYPES', 'RNDIS'),
-        'proxy_type': RNDISFactory('rndis.usb0')
+        'proxy_type': RNDISFactory('rndis.usb0'),
+        'add_to_tmp': False
     },
     'MOUSE': { 
         'should_enable': config.getboolean('TYPES', 'MOUSE'),
-        'proxy_type': MouseFactory('hid.usb1')
+        'proxy_type': MouseFactory('hid.usb1'),
+        'add_to_tmp': True,
+        'tmp_name': 'mouse'
     }
 })
 
@@ -89,6 +96,7 @@ def chdir_pwnbox():
 
 
 def on_post_device_creation():
+    log_command('mkdir -p /tmp/pwnbox/')
     for k,v in DEVICE_CONFIG.items():
         if not v.__contains__('should_enable'):
             continue
@@ -100,6 +108,10 @@ def on_post_device_creation():
             if isinstance(v['proxy_type'], DeviceFactory):
                 log_ok(f'Loading: {k} with Proxy({ type(v["proxy_type"]) }) named {v["proxy_type"].device_name}')
                 start_load(v['proxy_type'])
+
+                if v["add_to_tmp"]:
+                    dev_path = f"/configs/c.1/{v['proxy_type'].device_name}/dev"
+                    log_command(f'udevadm info -rq name  /sys/dev/char/$(cat {GADGET_PATH + dev_path}) > /tmp/pwnbox/{v["tmp_name"]}')
 
     chdir_pwnbox()
     pass
