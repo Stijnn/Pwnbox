@@ -159,8 +159,8 @@ def load_gadget():
         if loaded_devices != None:
             for dev in loaded_devices:
                 if dev["add_to_tmp"]:
-                    dev_path = f"/configs/c.1/{v['proxy_type'].device_name}/dev"
-                    log_command(f'udevadm info -rq name  /sys/dev/char/$(cat {GADGET_PATH + dev_path}) > /tmp/pwnbox/{v["tmp_name"]}')
+                    dev_path = f"/configs/c.1/{dev['proxy_type'].device_name}/dev"
+                    log_command(f'udevadm info -rq name  /sys/dev/char/$(cat {GADGET_PATH + dev_path}) > /tmp/pwnbox/{dev["tmp_name"]}')
 
         chdir_pwnbox()
         log_ok('Succesfully loaded gadget...')
