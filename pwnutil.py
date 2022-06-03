@@ -97,6 +97,8 @@ def chdir_pwnbox():
 
 def on_post_device_creation():
     log_command('mkdir -p /tmp/pwnbox/')
+
+    loaded_devices = []
     for k,v in DEVICE_CONFIG.items():
         if not v.__contains__('should_enable'):
             continue
@@ -108,10 +110,12 @@ def on_post_device_creation():
             if isinstance(v['proxy_type'], DeviceFactory):
                 log_ok(f'Loading: {k} with Proxy({ type(v["proxy_type"]) }) named {v["proxy_type"].device_name}')
                 start_load(v['proxy_type'])
+                loaded_devices.append(v)
 
-                if v["add_to_tmp"]:
-                    dev_path = f"/configs/c.1/{v['proxy_type'].device_name}/dev"
-                    log_command(f'udevadm info -rq name  /sys/dev/char/$(cat {GADGET_PATH + dev_path}) > /tmp/pwnbox/{v["tmp_name"]}')
+    for dev in loaded_devices:
+        if v["add_to_tmp"]:
+            dev_path = f"/configs/c.1/{v['proxy_type'].device_name}/dev"
+            log_command(f'udevadm info -rq name  /sys/dev/char/$(cat {GADGET_PATH + dev_path}) > /tmp/pwnbox/{v["tmp_name"]}')
 
     chdir_pwnbox()
     pass
