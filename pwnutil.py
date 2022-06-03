@@ -112,13 +112,8 @@ def on_post_device_creation():
                 start_load(v['proxy_type'])
                 loaded_devices.append(v)
 
-    for dev in loaded_devices:
-        if v["add_to_tmp"]:
-            dev_path = f"/configs/c.1/{v['proxy_type'].device_name}/dev"
-            log_command(f'udevadm info -rq name  /sys/dev/char/$(cat {GADGET_PATH + dev_path}) > /tmp/pwnbox/{v["tmp_name"]}')
-
     chdir_pwnbox()
-    pass
+    return loaded_devices
 
 
 def disable_udc():
@@ -156,10 +151,16 @@ def load_gadget():
         log_command('echo 0x80 > configs/c.1/bmAttributes')
 
         chdir_pwnbox()
-        on_post_device_creation()
+        loaded_devices = on_post_device_creation()
 
         if chdir_gadget():
             log_command('ls /sys/class/udc > UDC')
+
+        if loaded_devices != None:
+            for dev in loaded_devices:
+                if v["add_to_tmp"]:
+                    dev_path = f"/configs/c.1/{v['proxy_type'].device_name}/dev"
+                    log_command(f'udevadm info -rq name  /sys/dev/char/$(cat {GADGET_PATH + dev_path}) > /tmp/pwnbox/{v["tmp_name"]}')
 
         chdir_pwnbox()
         log_ok('Succesfully loaded gadget...')
