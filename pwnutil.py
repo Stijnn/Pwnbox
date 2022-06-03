@@ -191,6 +191,8 @@ def unload_gadget():
         os.rmdir(GADGET_PATH)
         chdir_pwnbox()
 
+        log_command('rm -rf /tmp/pwnbox/*')
+
         if not os.path.exists(GADGET_PATH):
             log_ok('Succesfully unloaded gadget...')
         else:
