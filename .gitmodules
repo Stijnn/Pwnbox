@@ -1,3 +1,3 @@
-[submodule "scripts/usbrubberducky-payloads"]
-	path = scripts/usbrubberducky-payloads
+[submodule "pwnboxlib/web/usbrubberducky-payloads"]
+	path = web/usbrubberducky-payloads
 	url = https://github.com/hak5/usbrubberducky-payloads.git
