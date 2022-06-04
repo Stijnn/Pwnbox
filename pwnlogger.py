@@ -25,7 +25,7 @@ def __log__(code, color, text: str):
 
 
 def log_command(command: str) -> int:
-    exit_code = os.system(f'{command}')
+    exit_code = os.system(command)
     log_ok(command) if exit_code == 0 else log_error(command)
     return exit_code
 
