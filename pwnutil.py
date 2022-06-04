@@ -161,6 +161,9 @@ def load_gadget():
                 if dev["add_to_tmp"]:
                     dev_path = f"/configs/c.1/{dev['proxy_type'].device_name}/dev"
                     log_command(f'udevadm info -rq name  /sys/dev/char/$(cat {GADGET_PATH + dev_path}) > /tmp/pwnbox/{dev["tmp_name"]}')
+                    with open(f'/tmp/pwnbox/{dev["tmp_name"]}', 'r') as link_file:
+                        log_command(f'chmod 777 {link_file.readline().strip()}')
+                        
 
         chdir_pwnbox()
         log_ok('Succesfully loaded gadget...')
