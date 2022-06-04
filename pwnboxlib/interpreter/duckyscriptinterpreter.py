@@ -24,6 +24,7 @@ ducky_keylink_params = {
     'TAB': KEY_TAB,
     'BREAK': KEY_PAUSE, 
     'PAUSE': KEY_PAUSE,
+    'ENTER': KEY_ENTER,
     'F1': KEY_F1,
     'F2': KEY_F2,
     'F3': KEY_F3,
@@ -81,7 +82,9 @@ def exec_ducky_function(line: str, kb: Keyboard, prev_line: str = None):
         sleep(float(full_line_split[1]) / 1000)
 
     elif function_type == 'GUI' or function_type == 'WINDOWS':
-        kb.press_key(USB_CHARACTER_TRANSLATION_KEYCODES.get(full_line_split[1]), [KEY_MOD_LMETA])
+        key_data = USB_CHARACTER_TRANSLATION_KEYCODES.get(full_line_split[1])
+        if key_data:
+            kb.press_key(chr(key_data[1]), [KEY_MOD_LMETA])
 
     elif function_type == 'MENU' or function_type == 'APP':
         kb.press_key(KEY_F10, [KEY_MOD_LSHIFT])
@@ -92,8 +95,17 @@ def exec_ducky_function(line: str, kb: Keyboard, prev_line: str = None):
         else:
             kb.press_key(full_line_split[1], [ducky_mod_link.get(function_type)])
 
+    elif function_type in ducky_mod_link:
+        if len(full_line_split) == 1:
+            kb.press_key(KEY_NONE, [ducky_mod_link[function_type]])
+        elif len(full_line_split) > 1:
+            if full_line_split[1] in ducky_keylink_params:
+                kb.press_key(ducky_keylink_params[full_line_split[1]], [ducky_mod_link[function_type]])
+            else:
+                kb.press_key(KEY_NONE, [ducky_mod_link[function_type]])
+
     elif function_type in ducky_keylink_params:
-        kb.press_key(ducky_keylink_params.get(full_line_split[1]), [ducky_mod_link.get(function_type)])
+        kb.press_key(ducky_keylink_params[function_type], [])
 
     elif function_type == 'REPEAT':
         if prev_line != None:
@@ -116,17 +128,21 @@ class DuckyScriptInterpeter:
         if keyboard_device == None:
             return False
 
+        script_lines = []
+
         file_handle = open(script_file_path, 'r')
         lines = file_handle.readlines()
+        for l in lines:
+            script_lines.append(l.strip())
         file_handle.close()
 
         delay_per_func = 0.0
 
-        for l in lines:
+        for l in script_lines:
             if l.split(' ')[0] == 'DEFAULT_DELAY' or l.split(' ')[0] == 'DEFAULTDELAY':
                 delay_per_func = float(l.split[1]) / 100
 
-        for l in lines:
+        for l in script_lines:
             exec_ducky_function(l, keyboard_device)
             sleep(delay_per_func)
 
