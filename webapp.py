@@ -7,7 +7,9 @@ app = Flask(__name__)
 
 script_links = {}
 script_count = 1
-for dir, sdir, file in os.walk('./usbrubberducky-payloads/payloads/library/'):
+
+print(f'{os.path.abspath(os.path.dirname(__file__))}/usbrubberducky-payloads/payloads/library/')
+for dir, sdir, file in os.walk(f'{os.path.abspath(os.path.dirname(__file__))}/usbrubberducky-payloads/payloads/library/'):
     if 'payload.txt' in file:
         fullpath = dir + '/' + 'payload.txt'
         script_links[f'{script_count}:  {os.path.basename(dir)}'] = fullpath
