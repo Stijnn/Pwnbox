@@ -50,7 +50,8 @@ ducky_keylink_params = {
     'NUMLOCK': KEY_NUMLOCK,
     'PRINTSCREEN': KEY_SYSRQ,
     'SCROLLLOCK': KEY_SCROLLLOCK,
-    'SPACE': KEY_SPACE
+    'SPACE': KEY_SPACE,
+    'BACKSPACE': KEY_BACKSPACE
 }
 
 
@@ -72,6 +73,9 @@ def exec_ducky_function(line: str, kb: Keyboard, prev_line: str = None):
     if function_type == 'REM':
         return
 
+    elif function_type == '':
+        return
+
     elif function_type == 'STRING':
         kb.write(" ".join(list(full_line_split[1:])))
 
@@ -90,10 +94,15 @@ def exec_ducky_function(line: str, kb: Keyboard, prev_line: str = None):
         kb.press_key(KEY_F10, [KEY_MOD_LSHIFT])
 
     elif function_type == 'SHIFT' or function_type == 'ALT' or function_type == 'CONTROL' or function_type == 'CTRL':
-        if full_line_split[1] in ducky_keylink_params:
-            kb.press_key(ducky_keylink_params.get(full_line_split[1]), [ducky_mod_link.get(function_type)])
+        if len(full_line_split) > 1:
+            if full_line_split[1] in ducky_keylink_params:
+                kb.press_key(ducky_keylink_params.get(full_line_split[1]), [ducky_mod_link.get(function_type)])
+            elif full_line_split[1] in USB_CHARACTER_TRANSLATION_KEYCODES:
+                kb.press_key(chr(USB_CHARACTER_TRANSLATION_KEYCODES[full_line_split[1]][1]), [ducky_mod_link.get(function_type)])
+            else:
+                kb.press_key(full_line_split[1], [ducky_mod_link.get(function_type)])
         else:
-            kb.press_key(full_line_split[1], [ducky_mod_link.get(function_type)])
+            kb.press_key(KEY_NONE, [ducky_mod_link.get(function_type)])
 
     elif function_type in ducky_mod_link:
         if len(full_line_split) == 1:
@@ -101,6 +110,8 @@ def exec_ducky_function(line: str, kb: Keyboard, prev_line: str = None):
         elif len(full_line_split) > 1:
             if full_line_split[1] in ducky_keylink_params:
                 kb.press_key(ducky_keylink_params[full_line_split[1]], [ducky_mod_link[function_type]])
+            elif full_line_split[1] in USB_CHARACTER_TRANSLATION_KEYCODES:
+                kb.press_key(chr(USB_CHARACTER_TRANSLATION_KEYCODES[full_line_split[1]][1]), [ducky_mod_link[function_type]])
             else:
                 kb.press_key(KEY_NONE, [ducky_mod_link[function_type]])
 

@@ -62,6 +62,7 @@ USB_CHARACTER_TRANSLATION_KEYCODES = {
     '7': [False, 36], 
     '8': [False, 37], 
     '9': [False, 38],
+    '0': [False, 39],
     '!': [True, 30], 
     '@': [True, 31], 
     '#': [True, 32], 

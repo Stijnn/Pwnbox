@@ -4,6 +4,15 @@ from pwnboxlib.interpreter.duckyscriptinterpreter import DuckyScriptInterpeter
 
 app = Flask(__name__)
 
+def nextnonexistent(f):
+    fnew = f
+    root, ext = os.path.splitext(f)
+    i = 0
+    while os.path.exists(fnew):
+        i += 1
+        fnew = '%s_%i%s' % (root, i, ext)
+    return fnew
+
 
 script_links = {}
 script_count = 1
@@ -15,6 +24,14 @@ for dir, sdir, file in os.walk(f'{os.path.abspath(os.path.dirname(__file__))}/us
         script_links[f'{script_count}:  {os.path.basename(dir)}'] = fullpath
         script_count += 1
 
+
+@app.route('/extract', methods = ['POST'])
+def extract():
+    os.system('mkdir -p ./extractions/')
+    with open(nextnonexistent('extractions/extraction.txt'), 'w') as f:
+        for param in request.form:
+            f.write(param)
+    return redirect('/')
 
 
 @app.route('/exec', methods = ['POST'])
