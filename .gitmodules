@@ -1,1 +1,4 @@
 
+[submodule "usbrubberducky-payloads"]
+	path = usbrubberducky-payloads
+	url = https://github.com/hak5/usbrubberducky-payloads
