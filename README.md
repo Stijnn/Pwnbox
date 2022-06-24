@@ -176,15 +176,118 @@ def main():
     app.run('127.0.0.1', 80)
     pass
 ```
-## Usage/Examples
+## Usage
 
-```javascript
-import Component from 'my-project'
+Pwnbox can be controlled in three ways. First we have ```pwnutil.py```. This python script is responsible for loading/unloading/disabling the gadgets.
+You can interface with this utility using the command-line. 
 
-function App() {
-  return <Component />
-}
+Using the following help (-h) parameter the command-line will show the help page / information.
+```bash
+sudo python3 ./pwnutil.py -h
 ```
+```bash
+usage: pwnutil.py [-h] [--load] [--unload] [--disable] [--no-logging]
+
+Pwnbox Command Line Interface Utility Program
+
+optional arguments:
+  -h, --help    show this help message and exit
+  --load        Load gadget if unloaded.
+  --unload      Unload gadget if loaded.
+  --disable     Disable the gadget but dont unload
+  --no-logging  Do not create a logfile
+```
+These are all the parameters available in the pwnutil.py tool.
+
+### Pwnboxlib
+
+The second method is using pwnboxlib that can be found and included in the python scripts. An example implementation using a keyboard can be found in test.py.
+Lets have a look at how you can use the keyboard class.
+
+First we have to include the keyboard module. We do that using the following code. We also import keytranslation. This module holds the virtual keys so you can reference them in code using the KEY_ specifier.
+```python
+from pwnboxlib.keyboard.keyboard import Keyboard
+from pwnboxlib.keyboard.keytranslation import *
+```
+
+Once we have the classes imported we need to get the keyboard instance. We do this using ```Keyboard.get()```. This function will return None if the keyboard has not been loaded.
+```python
+kb = Keyboard.get()
+if kb == None:
+    sys.exit()
+```
+
+So now we got our keyboard instance and we can start calling its functions. We can press a single key using ```press_key(self, key: str, modifiers: List[str] = [KEY_NONE], release=True)```
+```python
+# We are calling the press_key method sending the WIN+R key in this example.
+kb.press_key(KEY_R, [KEY_MOD_LMETA])
+
+# You can also call keys without modifiers.
+kb.press_key(KEY_R)
+
+# You can also reset/flush the interrupt buffer using the following code. This prevents repeat of key use.
+# By default release=True is set and thus this is not required. 
+kb.press_key(KEY_NONE)
+
+# When you want to set a HOLD on a specific key you can use the following code. You can reset this state using the previous example.
+kb.press_key(KEY_R, release=False)
+```
+
+Next up we have the function ```write(self, text: str)```. You can pass a piece of text to this function and it will automatically type this text using the keyboard.
+```python
+# The following code will type out "Hello World!"
+kb.write('Hello World!')
+```
+
+But there can be times where you want to write text and hit enter with as little downtime as possible. For this I created the following function ```write_line(self, text: str)```.
+This function combines the press_key and write function to write text and press enter.
+
+```python
+# An example typing cmd and pressing enter.
+kb.write_line('cmd')
+```
+
+As you may have noticed modifiers in the function press_key is of type List. This is because the modifiers is a flag type and can be multiple at once.
+The different types are implemented in the keytranslation module and are prefixed with KEY_MOD_.
+
+There are more functions available for different classes. Have a look at the different modules to see whats available.
+
+### Webapp.py
+This webapp runs on the given config. When navigating to the site you will see there are lots of different scripts in a list. These are buttons and clicking on them will execute the duckyscript on the Raspberry Pi. There is also an /extract endpoint available. This endpoint is a POST endpoint and can be used to POST data to during exfiltrations from the host OS.
+The POST method accepts the x-application-form standard. Once data is received the method creates a new file under /extractions/ named extraction_ followed by a number increasing with each extraction. In this file it stores the posted form.
+
+### Duckyscript Interpreter
+Because there are many duckyscripts made available by Hak5 I wrote a DuckyscriptInterpreter. This class can be found in ```pwnboxlib/interpreter/duckyscriptinterpreter.py```
+
+You can call this method using python3. As an example:
+```python
+DuckyScriptInterpeter.exec_script('path/to/the/script/payload')
+```
+This class uses a staticmethod so you do not have to instantiate a class object. It is advised to use an absolute path to the file.
+
+You can also import the class from the python command-line.
+```python
+>>> from pwnboxlib.interpreter.duckyscriptinterpreter import DuckyScriptInterpeter
+>>> DuckyScriptInterpeter.exec_script('path/to/the/script/payload')
+```
+## Designs
+
+```mermaid
+graph LR
+    A --> B
+    B --> C
+    C --> A
+```
+## Credits
+
+During this project various sources were used as a source of information.
+
+| Author | Link |
+| --- | --- |
+| [Brian Benchoff](https://hackaday.com/author/brianbenchoff/) | https://hackaday.com/2016/02/25/giving-the-pi-zero-usb-ethernet-and-serial-over-usb/ | 
+| [mame82](https://github.com/mame82) | https://github.com/RoganDawes/P4wnP1 |
+| [Chris Kuethe](https://github.com/ckuethe) | https://github.com/ckuethe/usbarmory/wiki/USB-Gadgets |
+| [USB Foundation](https://www.usb.org/) | https://www.usb.org/document-library/usb-20-specification |
 
 
 ## License
