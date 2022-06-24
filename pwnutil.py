@@ -172,12 +172,12 @@ def load_gadget():
         chdir_pwnbox()
         log_ok('Succesfully loaded gadget...')
 
-    if DEVICE_CONFIG['CDC_ECM']['should_enable']:
-        log_command(f'ifconfig usb0 {DEVICE_CONFIG["CDC_ECM"]["ip"]} netmask {DEVICE_CONFIG["CDC_ECM"]["netmask"]} up')
+    # if DEVICE_CONFIG['CDC_ECM']['should_enable']:
+    #     log_command(f'ifconfig usb0 {DEVICE_CONFIG["CDC_ECM"]["ip"]} netmask {DEVICE_CONFIG["CDC_ECM"]["netmask"]} up')
 
 
-    if DEVICE_CONFIG['RNDIS']['should_enable']:
-        log_command(f'ifconfig usb0 {DEVICE_CONFIG["RNDIS"]["ip"]} netmask {DEVICE_CONFIG["RNDIS"]["netmask"]} up')
+    # if DEVICE_CONFIG['RNDIS']['should_enable']:
+    #     log_command(f'ifconfig usb0 {DEVICE_CONFIG["RNDIS"]["ip"]} netmask {DEVICE_CONFIG["RNDIS"]["netmask"]} up')
 
         
     pass
