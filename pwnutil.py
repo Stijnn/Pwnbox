@@ -64,14 +64,14 @@ DEVICE_CONFIG = dict({
         'proxy_type': EthernetFactory('ecm.usb0'),
         'add_to_tmp': False,
         'ip': '192.168.4.1',
-        'netmask': '255.255.255.255'
+        'netmask': '255.255.255.0'
     },
     'RNDIS': { 
         'should_enable': config.getboolean('TYPES', 'RNDIS'),
         'proxy_type': RNDISFactory('rndis.usb0'),
         'add_to_tmp': False,
         'ip': '192.168.4.1',
-        'netmask': '255.255.255.255'
+        'netmask': '255.255.255.0'
     },
     'MOUSE': { 
         'should_enable': config.getboolean('TYPES', 'MOUSE'),
