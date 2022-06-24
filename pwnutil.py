@@ -62,12 +62,16 @@ DEVICE_CONFIG = dict({
     'CDC_ECM': { 
         'should_enable': config.getboolean('TYPES', 'CDC_ECM'),
         'proxy_type': EthernetFactory('ecm.usb0'),
-        'add_to_tmp': False
+        'add_to_tmp': False,
+        'ip': '192.168.4.1',
+        'netmask': '255.255.255.255'
     },
     'RNDIS': { 
         'should_enable': config.getboolean('TYPES', 'RNDIS'),
         'proxy_type': RNDISFactory('rndis.usb0'),
-        'add_to_tmp': False
+        'add_to_tmp': False,
+        'ip': '192.168.4.1',
+        'netmask': '255.255.255.255'
     },
     'MOUSE': { 
         'should_enable': config.getboolean('TYPES', 'MOUSE'),
@@ -167,6 +171,15 @@ def load_gadget():
 
         chdir_pwnbox()
         log_ok('Succesfully loaded gadget...')
+
+    if DEVICE_CONFIG['CDC_ECM']['should_enable']:
+        log_command(f'ifconfig usb0 {DEVICE_CONFIG["CDC_ECM"]["ip"]} netmask {DEVICE_CONFIG["CDC_ECM"]["netmask"]} up')
+
+
+    if DEVICE_CONFIG['RNDIS']['should_enable']:
+        log_command(f'ifconfig usb0 {DEVICE_CONFIG["RNDIS"]["ip"]} netmask {DEVICE_CONFIG["RNDIS"]["netmask"]} up')
+
+        
     pass
 
 
