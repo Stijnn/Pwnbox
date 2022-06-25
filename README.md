@@ -291,11 +291,28 @@ You can also import the class from the python command-line.
 ```
 ## Designs
 
+#### Install.py
 ```mermaid
 graph LR
-    A --> B
-    B --> C
-    C --> A
+    A((Start install.py)) --> B(Check root privileges)
+    B --> C{Check config exists}
+
+    C --> |Exists| D[Skipping creation]
+    C --> |Missing| E[Create new default config]
+
+    D --> F{Check /etc/rc.local for auto-boot configuration}
+    E --> F
+
+    F --> |Exists| H[Skip line additions]
+    F --> |Missing| G[Add missing lines]
+    G --> I[Move EOF exit code line]
+
+    I --> J(Create new diskimage for mass-storage)
+    H --> J
+
+    J --> K(Enable required Kernel modules)
+
+    K --> exit((Exit program))
 ```
 ## Credits
 
