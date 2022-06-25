@@ -26,6 +26,25 @@ Without this pin a host PC does not see the device as a valid USB Gadget.
     - CDC/ECM
 
 - Mass Storage
+
+### Platforms
+
+| Board | Supported | Raspbian | Ubuntu | CentOS
+|---|---|---|---|---|
+| Raspberry Pi 1 | No | Unsupported | Unsupported | Unsupported
+| Raspberry Pi 1B | No | Unsupported | Unsupported | Unsupported
+| Raspberry Pi 2 | No | Unsupported | Unsupported | Unsupported
+| Raspberry Pi 2B | No | Unsupported | Unsupported | Unsupported
+| Raspberry Pi 3 | No | Unsupported | Unsupported | Unsupported
+| Raspberry Pi 3B | No | Unsupported | Unsupported | Unsupported
+| Raspberry Pi 4 | Yes | Working | Untested | Untested
+| Raspberry Pi 4B | Yes | Working | Untested | Untested
+| Raspberry Pi Zero | Theoratically | Untested | Untested | Untested
+| Raspberry Pi Zero W | Theoratically | Untested | Untested | Untested
+| Raspberry Pi Zero 2| Theoratically | Untested | Untested | Untested
+| Raspberry Pi Zero 2W| Theoratically | Untested | Untested | Untested
+
+
 ## Installation
 
 First clone this repository using the following command. Please note that recursive is needed to include the rubberducky payloads submodule made by [Hak5](https://github.com/hak5/usbrubberducky-payloads/).
