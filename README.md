@@ -1,5 +1,5 @@
-| ![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?) |  ![MIT License](https://img.shields.io/github/issues-raw/stijnn/pwnbox?) |
-| ----- | ----- |
+![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)
+![MIT License](https://img.shields.io/github/issues-raw/stijnn/pwnbox?)
 
 # Pwnbox
 
