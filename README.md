@@ -39,10 +39,10 @@ Without this pin a host PC does not see the device as a valid USB Gadget.
 | Raspberry Pi 3B | No | Unsupported | Unsupported | Unsupported
 | Raspberry Pi 4 | Yes | Working | Untested | Untested
 | Raspberry Pi 4B | Yes | Working | Untested | Untested
-| Raspberry Pi Zero | Theoratically | Untested | Untested | Untested
-| Raspberry Pi Zero W | Theoratically | Untested | Untested | Untested
-| Raspberry Pi Zero 2| Theoratically | Untested | Untested | Untested
-| Raspberry Pi Zero 2W| Theoratically | Untested | Untested | Untested
+| Raspberry Pi Zero | Theoretically | Untested | Untested | Untested
+| Raspberry Pi Zero W | Theoretically | Untested | Untested | Untested
+| Raspberry Pi Zero 2| Theoretically | Untested | Untested | Untested
+| Raspberry Pi Zero 2W| Theoretically | Untested | Untested | Untested
 
 
 ## Installation
