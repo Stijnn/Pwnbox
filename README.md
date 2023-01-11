@@ -330,7 +330,7 @@ During this project various sources were used as a source of information.
 
 MIT License
 
-Copyright (c) 2022 Stijn Verhelpen
+Copyright (c) 2023 Stijnn
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
